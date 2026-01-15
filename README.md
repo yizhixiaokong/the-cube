@@ -2,6 +2,10 @@
 
 一个基于 Three.js 开发的 3D 魔方游戏，支持多种规格（2x2 到 5x5）、自定义主题以及离线访问。
 
+## 🌐 在线体验
+
+**立即在线体验**: [点击访问项目](https://yizhixiaokong.github.io/the-cube)
+
 ## 🌟 特性
 
 - **支持多种阶数**: 2x2, 3x3, 4x4, 5x5。
@@ -48,6 +52,12 @@ npx serve .
 ## 📂 项目结构
 
 关于项目架构、代码层级及扩展开发的详细说明，请参考 [ARCHITECTURE_GUIDE.md](ARCHITECTURE_GUIDE.md)。
+
+## 🚀 部署
+
+想要部署到 GitHub Pages 或其他平台？请查看 [DEPLOY.md](DEPLOY.md) 了解详细步骤。
+
+本项目已配置 GitHub Actions 自动部署工作流，每次推送到 `master` 分支时会自动构建和部署。
 
 ## 🛠 技术栈
 
