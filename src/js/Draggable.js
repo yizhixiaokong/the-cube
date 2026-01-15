@@ -1,5 +1,11 @@
 window.addEventListener( 'touchmove', () => {} );
-document.addEventListener( 'touchmove',  event => { event.preventDefault(); }, { passive: false } );
+document.addEventListener( 'touchmove',  event => { 
+  // Allow scrolling in settings/stats/theme panels
+  const scrollableElements = event.target.closest('.ui__prefs, .ui__stats, .ui__theme');
+  if (!scrollableElements) {
+    event.preventDefault();
+  }
+}, { passive: false } );
 
 class Draggable {
 
