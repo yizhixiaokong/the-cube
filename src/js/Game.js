@@ -10,6 +10,7 @@ import { Scores } from './Scores.js';
 import { Storage } from './Storage.js';
 import { Themes } from './Themes.js';
 import { ThemeEditor } from './ThemeEditor.js';
+import { Localization } from './Localization.js';
 import { States } from './States.js';
 // import { Keyboard } from './Keyboard.js';
 
@@ -80,6 +81,7 @@ class Game {
     this.confetti = new Confetti( this );
     this.themes = new Themes( this );
     this.themeEditor = new ThemeEditor( this );
+    this.localization = new Localization( this );
 
     this.initActions();
 
@@ -91,6 +93,7 @@ class Game {
     this.preferences.init();
     this.cube.init();
     this.transition.init();
+    this.localization.init();
 
     this.storage.loadGame();
     this.scores.calcStats();
@@ -275,7 +278,10 @@ class Game {
       this.transition.preferences( HIDE );
 
       setTimeout( () => this.transition.cube( SHOW ), 500 );
-      setTimeout( () => this.transition.title( SHOW ), 1200 );
+      setTimeout( () => {
+        this.localization.updateTitle();
+        this.transition.title( SHOW );
+      }, 1200 );
 
     }
 
@@ -355,7 +361,10 @@ class Game {
       this.transition.stats( HIDE );
 
       setTimeout( () => this.transition.cube( SHOW ), 500 );
-      setTimeout( () => this.transition.title( SHOW ), 1200 );
+      setTimeout( () => {
+        this.localization.updateTitle();
+        this.transition.title( SHOW );
+      }, 1200 );
 
     }
 

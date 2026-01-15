@@ -1,4 +1,5 @@
 import { Range } from './Range.js';
+import { Picker } from './Picker.js';
 
 class Preferences {
 
@@ -103,6 +104,15 @@ class Preferences {
         value: 50,
         range: [ 0, 100 ],
         onUpdate: value => this.game.themeEditor.updateHSL(),
+        onComplete: () => this.game.storage.savePreferences(),
+      } ),
+
+      lang: new Picker( 'lang', {
+        value: this.game.localization.lang === 'zh' ? 1 : (this.game.localization.lang === 'ja' ? 2 : 0),
+        onUpdate: value => {
+            const lang = ['en', 'zh', 'ja'][value];
+            this.game.localization.setLang(lang);
+        },
         onComplete: () => this.game.storage.savePreferences(),
       } ),
 

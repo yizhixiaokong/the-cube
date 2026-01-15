@@ -260,13 +260,15 @@ class Transition {
 
   preferences( show ) {
 
-    this.ranges( this.game.dom.prefs.querySelectorAll( '.range' ), 'prefs', show );
+    this.ranges( this.game.dom.prefs.querySelectorAll( '.range, .picker' ), 'prefs', show );
+    this.game.dom.prefs.style.pointerEvents = show ? 'auto' : 'none';
 
   }
 
   theming( show ) {
 
-    this.ranges( this.game.dom.theme.querySelectorAll( '.range' ), 'prefs', show );
+    this.ranges( this.game.dom.theme.querySelectorAll( '.range, .picker' ), 'prefs', show );
+    this.game.dom.theme.style.pointerEvents = show ? 'auto' : 'none';
 
   }
 
@@ -283,17 +285,20 @@ class Transition {
 
     ranges.forEach( ( range, rangeIndex ) => {
     
-      const label = range.querySelector( '.range__label' );
+      const label = range.querySelector( '.range__label, .picker__label' );
       const track = range.querySelector( '.range__track-line' );
       const handle = range.querySelector( '.range__handle' );
-      const list = range.querySelectorAll( '.range__list div' );
+      const list = range.querySelectorAll( '.range__list div, .picker__list div' );
+      const pickerValue = range.querySelector( '.picker__value' );
 
       const delay = rangeIndex * ( show ? 120 : 100 );
 
       label.style.opacity = show ? 0 : 1;
-      track.style.opacity = show ? 0 : 1;
-      handle.style.opacity = show ? 0 : 1;
-      handle.style.pointerEvents = show ? 'all' : 'none';
+      if ( track ) track.style.opacity = show ? 0 : 1;
+      if ( handle ) handle.style.opacity = show ? 0 : 1;
+      if ( handle ) handle.style.pointerEvents = show ? 'all' : 'none';
+      if ( pickerValue ) pickerValue.style.opacity = show ? 0 : 1;
+      if ( pickerValue ) pickerValue.style.pointerEvents = show ? 'all' : 'none';
 
       this.tweens[ type ][ tweenId++ ] = new Tween( {
         delay: show ? delay : delay,
@@ -310,37 +315,65 @@ class Transition {
         }
       } );
 
-      this.tweens[ type ][ tweenId++ ] = new Tween( {
-        delay: show ? delay + 100 : delay,
-        duration: 400,
-        easing: easing,
-        onUpdate: tween => {
+      if ( track ) {
 
-          const translate = show ? ( 1 - tween.value ) : tween.value;
-          const scale = show ? tween.value : ( 1 - tween.value );
-          const opacity = scale;
+        this.tweens[ type ][ tweenId++ ] = new Tween( {
+          delay: show ? delay + 100 : delay,
+          duration: 400,
+          easing: easing,
+          onUpdate: tween => {
 
-          track.style.transform = `translate3d(0, ${translate}em, 0) scale3d(${scale}, 1, 1)`;
-          track.style.opacity = opacity;
+            const translate = show ? ( 1 - tween.value ) : tween.value;
+            const scale = show ? tween.value : ( 1 - tween.value );
+            const opacity = scale;
 
-        }
-      } );
+            track.style.transform = `translate3d(0, ${translate}em, 0) scale3d(${scale}, 1, 1)`;
+            track.style.opacity = opacity;
 
-      this.tweens[ type ][ tweenId++ ] = new Tween( {
-        delay: show ? delay + 100 : delay,
-        duration: 400,
-        easing: easing,
-        onUpdate: tween => {
+          }
+        } );
 
-          const translate = show ? ( 1 - tween.value ) : tween.value;
-          const opacity = 1 - translate;
-          const scale = 0.5 + opacity * 0.5;
+      }
 
-          handle.style.transform = `translate3d(0, ${translate}em, 0) scale3d(${scale}, ${scale}, ${scale})`;
-          handle.style.opacity = opacity;
+      if ( handle ) {
 
-        }
-      } );
+        this.tweens[ type ][ tweenId++ ] = new Tween( {
+          delay: show ? delay + 100 : delay,
+          duration: 400,
+          easing: easing,
+          onUpdate: tween => {
+
+            const translate = show ? ( 1 - tween.value ) : tween.value;
+            const opacity = 1 - translate;
+            const scale = 0.5 + opacity * 0.5;
+
+            handle.style.transform = `translate3d(0, ${translate}em, 0) scale3d(${scale}, ${scale}, ${scale})`;
+            handle.style.opacity = opacity;
+
+          }
+        } );
+
+      }
+
+      if ( pickerValue ) {
+
+        this.tweens[ type ][ tweenId++ ] = new Tween( {
+          delay: show ? delay + 100 : delay,
+          duration: 400,
+          easing: easing,
+          onUpdate: tween => {
+
+            const translate = show ? ( 1 - tween.value ) : tween.value;
+            const opacity = show ? tween.value : ( 1 - tween.value );
+            const scale = 0.8 + opacity * 0.2;
+
+            pickerValue.style.transform = `translate3d(0, ${translate}em, 0) scale3d(${scale}, 1, 1)`;
+            pickerValue.style.opacity = opacity;
+
+          }
+        } );
+
+      }
 
       list.forEach( ( listItem, labelIndex ) => {
 

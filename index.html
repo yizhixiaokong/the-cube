@@ -46,20 +46,20 @@
     <div class="ui__game"></div>
 
     <div class="ui__texts">
-      <h1 class="text text--title">
+      <h1 class="text text--title" data-lang="title">
         <span>THE</span>
         <span>CUBE</span>
       </h1>
-      <div class="text text--note">
+      <div class="text text--note" data-lang="note">
         Double tap to start
       </div>
-      <div class="text text--timer">
+      <div class="text text--timer" data-lang="timer">
         0:00
       </div>
-      <div class="text text--complete">
+      <div class="text text--complete" data-lang="complete">
         <span>Complete!</span>
       </div>
-      <div class="text text--best-time">
+      <div class="text text--best-time" data-lang="best-time">
         <icon trophy></icon>
         <span>Best Time!</span>
       </div>
@@ -71,6 +71,7 @@
       <range name="scramble" title="Scramble Length" list="20,25,30"></range>
       <range name="fov" title="Camera Angle" list="Ortographic,Perspective"></range>
       <range name="theme" title="Color Scheme" list="Cube,Erno,Dust,Camo,Rain"></range>
+      <picker name="lang" title="Language" list="English,Chinese,Japanese"></picker>
     </div>
 
     <div class="ui__theme">
@@ -80,25 +81,25 @@
     </div>
 
     <div class="ui__stats">
-      <div class="stats" name="cube-size">
+      <div class="stats" name="cube-size" data-lang="stats-cube">
         <i>Cube:</i><b>3x3x3</b>
       </div>
-      <div class="stats" name="total-solves">
+      <div class="stats" name="total-solves" data-lang="stats-total-solves">
         <i>Total solves:</i><b>-</b>
       </div>
-      <div class="stats" name="best-time">
+      <div class="stats" name="best-time" data-lang="stats-best-time">
         <i>Best time:</i><b>-</b>
       </div>
-      <div class="stats" name="worst-time">
+      <div class="stats" name="worst-time" data-lang="stats-worst-time">
         <i>Worst time:</i><b>-</b>
       </div>
-      <div class="stats" name="average-5">
+      <div class="stats" name="average-5" data-lang="stats-average-5">
         <i>Average of 5:</i><b>-</b>
       </div>
-      <div class="stats" name="average-12">
+      <div class="stats" name="average-12" data-lang="stats-average-12">
         <i>Average of 12:</i><b>-</b>
       </div>
-      <div class="stats" name="average-25">
+      <div class="stats" name="average-25" data-lang="stats-average-25">
         <i>Average of 25:</i><b>-</b>
       </div>
     </div>

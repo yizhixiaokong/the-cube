@@ -153,6 +153,12 @@ class Storage {
       this.game.themes.colors = preferences.colors;
       this.game.themes.setTheme( preferences.theme );
 
+      if ( preferences.lang ) {
+        this.game.localization.setLang( preferences.lang );
+      } else {
+        this.game.localization.setLang( 'en' );
+      }
+
       return true;
 
     } catch (e) {
@@ -165,6 +171,7 @@ class Storage {
       this.game.world.resize();
 
       this.game.themes.setTheme( 'cube' );
+      this.game.localization.setLang( 'en' );
 
       this.savePreferences();
 
@@ -183,6 +190,7 @@ class Storage {
       fov: this.game.world.fov,
       theme: this.game.themes.theme,
       colors: this.game.themes.colors,
+      lang: this.game.localization.lang,
     };
 
     localStorage.setItem( 'theCube_preferences', JSON.stringify( preferences ) );

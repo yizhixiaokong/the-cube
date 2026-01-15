@@ -38,9 +38,17 @@ src/
 │   ├── Scrambler.js     # [逻辑] 生成魔方打乱公式算法
 │   ├── Storage.js       # [数据] LocalStorage 封装
 │   ├── Preferences.js   # [配置] 用户设置管理
+│   ├── Range.js         # [UI 组件] 滑块控件
+│   ├── Picker.js        # [UI 组件] 下拉选择器控件
 │   ├── ThemeEditor.js   # [工具] 主题编辑器逻辑
+│   ├── Localization.js  # [国际化] 处理多语言字典与界面文本更新，支持英/中/日
 │   └── plugins/         # Three.js 自定义几何体插件
 ├── scss/                # UI 样式源码 (DOM 层)
+│   ├── components/
+│   │   ├── _range.sass   # 滑块控件样式
+│   │   ├── _picker.sass  # 下拉选择器样式
+│   │   └── ...
+│   └── styles.sass      # 主样式文件
 └── game/                # (如果有) 其他游戏相关逻辑
 ```
 
@@ -143,3 +151,8 @@ graph TD
 *   **调整颜色主题**:
     - 在 `src/js/Themes.js` 中定义新的配色方案。
     - 使用 `src/js/ThemeEditor.js` 及其配套 UI(`ui__theme`) 进行交互式调整。
+*   **增加新语言**:
+    - 在 `src/js/Localization.js` 的 `dictionaries` 对象中添加新的语言键值对（如 `'fr': {...}` 法语）。
+    - 在 `src/js/Preferences.js` 中的 `lang` Picker 配置里增加对应索引（修改 `['en', 'zh', 'ja']` 数组）。
+    - 在 `index.html` 的 `<picker name="lang">` 元素中在 list 属性添加新选项（如 `list="English,Chinese,Japanese,French"`）。
+    - 在 `Localization.js` 的 `updateRangeList('lang', [...])` 调用中添加新的 key（如 `'lang-fr'`）。
