@@ -10,6 +10,7 @@
 
 - **支持多种阶数**: 2x2, 3x3, 4x4, 5x5。
 - **多语言支持**: 内置英文、中文、日文三种界面语言，可在设置中切换。
+- **标准记法支持**: 完整支持魔方国际标准记法（WCA Notation），可通过字母术语控制魔方。
 - **平滑交互**: 支持触屏和鼠标旋转魔方层。
 - **高度自定义**: 内置主题编辑器，可自由调整配色、相机角度和动画类型。
 - **离线支持**: 采用 PWA 技术，支持在无网络环境下运行。
@@ -51,11 +52,48 @@ npx serve .
 
 ## 📂 项目结构
 
-关于项目架构、代码层级及扩展开发的详细说明，请参考 [ARCHITECTURE_GUIDE.md](ARCHITECTURE_GUIDE.md)。
+```
+the-cube/
+├── src/            # 源代码
+├── assets/         # 静态资源（CSS, JS, 图标）
+├── docs/           # 项目文档
+├── tests/          # 测试文件
+└── export/         # 构建输出
+```
+
+详细架构说明请参考 [docs/ARCHITECTURE_GUIDE.md](docs/ARCHITECTURE_GUIDE.md)。
+
+## 🎮 魔方标准记法
+
+支持完整的国际标准魔方记法（WCA Notation），**自动适配 2x2 到 5x5 所有阶数**。
+
+详细使用说明请参考 [docs/NOTATION.md](docs/NOTATION.md)。
+
+**快速示例**:
+```javascript
+// 基础算法
+game.notation.move("R U R' U'");
+
+// 3x3 算法
+game.notation.move("R U R' U' R' F R2 U' R' U' R U R' F'");
+
+// 4x4 数字记法
+game.notation.move("2R 2U 2R' 2U'");
+
+// 5x5 三层转动
+game.notation.move("3Rw U 3Rw' U'");
+```
+
+**支持的记法**:
+- 基础转动: `R` `L` `U` `D` `F` `B` + `'` `2`
+- 宽转（双层）: `r` `Rw` 等
+- 整体旋转: `x` `y` `z`
+- 中间层（奇数阶）: `M` `E` `S`
+- 数字层记法（4x4+）: `2R` `3R` `4R`
 
 ## 🚀 部署
 
-想要部署到 GitHub Pages 或其他平台？请查看 [DEPLOY.md](DEPLOY.md) 了解详细步骤。
+部署到 GitHub Pages 或其他平台，请查看 [docs/DEPLOY.md](docs/DEPLOY.md)。
 
 本项目已配置 GitHub Actions 自动部署工作流，每次推送到 `master` 分支时会自动构建和部署。
 

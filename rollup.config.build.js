@@ -9,5 +9,6 @@ export default {
       format: 'iife',
       file: './assets/js/cube.js',
       indent: '\t',
+      name: 'CubeGame',
   },
 };

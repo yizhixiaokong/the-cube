@@ -259,11 +259,11 @@ class Controls {
 
         if ( ! scramble ) this.onMove();
 
-        const layer = this.flipLayer.slice( 0 );
+        const layer = this.flipLayer ? this.flipLayer.slice( 0 ) : [];
 
         this.game.cube.object.rotation.setFromVector3( this.snapRotation( this.game.cube.object.rotation.toVector3() ) );
         this.group.rotation.setFromVector3( this.snapRotation( this.group.rotation.toVector3() ) );
-        this.deselectLayer( this.flipLayer );
+        if (this.flipLayer) this.deselectLayer( this.flipLayer );
 
         callback( layer );
 

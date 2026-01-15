@@ -67,13 +67,15 @@ class Cube {
 
 		if ( this.size !== this.sizeGenerated || force ) {
 
-			this.size = this.game.preferences.ranges.size.value;
+			if (this.game.preferences) {
+				this.size = this.game.preferences.ranges.size.value;
+			}
 
 			this.reset();
 			this.init();
 
 			this.game.saved = false;
-			this.game.timer.reset();
+			if (this.game.timer) this.game.timer.reset();
 			this.game.storage.clearGame();
 
 		}

@@ -54,6 +54,9 @@ class Storage {
 
   saveGame() {
 
+    // playground 环境下 timer 不存在，无需保存游戏
+    if (!this.game.timer) return;
+
     const gameInProgress = true;
     const gameCubeData = { names: [], positions: [], rotations: [] };
     const gameTime = this.game.timer.deltaTime;
@@ -145,7 +148,7 @@ class Storage {
 
       this.game.cube.size = parseInt( preferences.cubeSize );
       this.game.controls.flipConfig = parseInt( preferences.flipConfig );
-      this.game.scrambler.dificulty = parseInt( preferences.dificulty );
+      if ( this.game.scrambler ) this.game.scrambler.dificulty = parseInt( preferences.dificulty );
 
       this.game.world.fov = parseFloat( preferences.fov );
       this.game.world.resize();
@@ -153,10 +156,12 @@ class Storage {
       this.game.themes.colors = preferences.colors;
       this.game.themes.setTheme( preferences.theme );
 
-      if ( preferences.lang ) {
-        this.game.localization.setLang( preferences.lang );
-      } else {
-        this.game.localization.setLang( 'en' );
+      if ( this.game.localization ) {
+        if ( preferences.lang ) {
+          this.game.localization.setLang( preferences.lang );
+        } else {
+          this.game.localization.setLang( 'en' );
+        }
       }
 
       return true;
@@ -165,13 +170,13 @@ class Storage {
 
       this.game.cube.size = 3;
       this.game.controls.flipConfig = 0;
-      this.game.scrambler.dificulty = 1;
+      if ( this.game.scrambler ) this.game.scrambler.dificulty = 1;
 
       this.game.world.fov = 10;
       this.game.world.resize();
 
       this.game.themes.setTheme( 'cube' );
-      this.game.localization.setLang( 'en' );
+      if ( this.game.localization ) this.game.localization.setLang( 'en' );
 
       this.savePreferences();
 
@@ -186,12 +191,14 @@ class Storage {
     const preferences = {
       cubeSize: this.game.cube.size,
       flipConfig: this.game.controls.flipConfig,
-      dificulty: this.game.scrambler.dificulty,
       fov: this.game.world.fov,
       theme: this.game.themes.theme,
       colors: this.game.themes.colors,
-      lang: this.game.localization.lang,
     };
+
+    // 只在完整模式下保存这些属性
+    if (this.game.scrambler) preferences.dificulty = this.game.scrambler.dificulty;
+    if (this.game.localization) preferences.lang = this.game.localization.lang;
 
     localStorage.setItem( 'theCube_preferences', JSON.stringify( preferences ) );
 

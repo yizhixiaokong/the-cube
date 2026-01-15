@@ -126,6 +126,12 @@
 
   <script src="assets/js/three.js"></script>
   <script src="assets/js/cube.js"></script>
+  <script>
+    // 初始化完整模式的游戏
+    if (typeof CubeGame !== 'undefined' && CubeGame.Game) {
+      window.game = new CubeGame.Game();
+    }
+  </script>
 
   <script src="upup.min.js"></script>
   <script>

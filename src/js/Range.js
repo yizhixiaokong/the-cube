@@ -61,6 +61,13 @@ class Range {
     }, options || {} );
 
     this.element = document.querySelector( '.range[name="' + name + '"]' );
+    
+    // 如果DOM元素不存在（如在playground环境），跳过初始化
+    if (!this.element) {
+      this.disabled = true;
+      return;
+    }
+    
     this.track = this.element.querySelector( '.range__track' );
     this.handle = this.element.querySelector( '.range__handle' );
     this.list = [].slice.call( this.element.querySelectorAll( '.range__list div' ) );

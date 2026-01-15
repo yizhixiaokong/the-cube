@@ -48,6 +48,13 @@ class Picker {
     }, options || {} );
 
     this.element = document.querySelector( '.picker[name="' + name + '"]' );
+    
+    // 如果DOM元素不存在（如在playground环境），跳过初始化
+    if (!this.element) {
+      this.disabled = true;
+      return;
+    }
+    
     this.label = this.element.querySelector( '.picker__label' );
     this.valueDisplay = this.element.querySelector( '.picker__value' );
     this.list = this.element.querySelector( '.picker__list' );

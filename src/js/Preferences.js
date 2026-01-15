@@ -27,11 +27,13 @@ class Preferences {
 
           this.game.cube.size = value;
 
-          this.game.preferences.ranges.scramble.list.forEach( ( item, i ) => {
+          if (this.game.preferences.ranges.scramble && this.game.preferences.ranges.scramble.list) {
+            this.game.preferences.ranges.scramble.list.forEach( ( item, i ) => {
 
-            item.innerHTML = this.game.scrambler.scrambleLength[ this.game.cube.size ][ i ];
+              item.innerHTML = this.game.scrambler.scrambleLength[ this.game.cube.size ][ i ];
 
-          } );
+            } );
+          }
 
         },
         onComplete: () => this.game.storage.savePreferences(),
@@ -118,11 +120,13 @@ class Preferences {
 
     };
 
-    this.ranges.scramble.list.forEach( ( item, i ) => {
+    if (this.ranges.scramble && this.ranges.scramble.list) {
+      this.ranges.scramble.list.forEach( ( item, i ) => {
 
-      item.innerHTML = this.game.scrambler.scrambleLength[ this.game.cube.size ][ i ];
+        item.innerHTML = this.game.scrambler.scrambleLength[ this.game.cube.size ][ i ];
 
-    } );
+      } );
+    }
     
   }
 

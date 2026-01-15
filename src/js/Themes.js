@@ -64,7 +64,9 @@ class Themes {
 
   getColors() {
 
-    return this.colors[ this.theme ];
+    // 如果 theme 未设置或不存在，使用默认的 'cube' 主题
+    const selectedTheme = this.theme && this.colors[this.theme] ? this.theme : 'cube';
+    return this.colors[ selectedTheme ];
 
   }
 
@@ -74,18 +76,26 @@ class Themes {
     if ( theme !== false ) this.theme = theme;
 
     const colors = this.getColors();
+    
+    // 防御性检查：如果没有颜色数据，直接返回
+    if (!colors) {
+      console.error('Themes: No colors available for theme:', this.theme);
+      return;
+    }
 
-    this.game.dom.prefs.querySelectorAll( '.range__handle div' ).forEach( range => {
+    if ( this.game.dom.prefs ) {
+      this.game.dom.prefs.querySelectorAll( '.range__handle div' ).forEach( range => {
 
-      range.style.background = '#' + colors.R.toString(16).padStart(6, '0');
+        range.style.background = '#' + colors.R.toString(16).padStart(6, '0');
 
-    } );
+      } );
+    }
 
     this.game.cube.updateColors( colors );
 
-    this.game.confetti.updateColors( colors );
+    if ( this.game.confetti ) this.game.confetti.updateColors( colors );
 
-    this.game.dom.back.style.background = '#' + colors.G.toString(16).padStart(6, '0');
+    if ( this.game.dom.back ) this.game.dom.back.style.background = '#' + colors.G.toString(16).padStart(6, '0');
 
   }
 

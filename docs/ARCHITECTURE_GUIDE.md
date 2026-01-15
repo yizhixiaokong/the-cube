@@ -36,6 +36,7 @@ src/
 │   ├── Cube.js          # [模型] 魔方数据结构、几何体生成、状态管理
 │   ├── Controls.js      # [输入] 处理触摸/鼠标事件，射线检测 (Raycasting)
 │   ├── Scrambler.js     # [逻辑] 生成魔方打乱公式算法
+│   ├── Notation.js      # [API] 标准魔方记法解析器，支持 WCA 国际记法
 │   ├── Storage.js       # [数据] LocalStorage 封装
 │   ├── Preferences.js   # [配置] 用户设置管理
 │   ├── Range.js         # [UI 组件] 滑块控件
@@ -70,6 +71,9 @@ src/
 5.  **[rollup.config.dev.js](rollup.config.dev.js)**
     *   **作用**: 构建配置。
     *   **职责**: 了解它是如何将分散的 ESM 模块打包成浏览器可执行的 IIFE 文件。
+6.  **[src/js/Notation.js](src/js/Notation.js)**
+    *   **作用**: 标准记法解析器。
+    *   **职责**: 解析魔方国际标准记法（R, U, F等），将其转换为底层的 `Controls` API 调用，支持程序化控制魔方。详见 [NOTATION_GUIDE.md](NOTATION_GUIDE.md)。
 
 ## 5. 架构图 (Mermaid)
 
@@ -156,3 +160,7 @@ graph TD
     - 在 `src/js/Preferences.js` 中的 `lang` Picker 配置里增加对应索引（修改 `['en', 'zh', 'ja']` 数组）。
     - 在 `index.html` 的 `<picker name="lang">` 元素中在 list 属性添加新选项（如 `list="English,Chinese,Japanese,French"`）。
     - 在 `Localization.js` 的 `updateRangeList('lang', [...])` 调用中添加新的 key（如 `'lang-fr'`）。
+*   **使用标准魔方记法控制**:
+    - 通过 `game.notation.move("R U R' U'")` 执行标准算法。
+    - 支持基础转动（R, L, U, D, F, B）、修饰符（', 2）、宽转（r, l, u等）、中层（M, E, S）、整体旋转（x, y, z）。
+    - 完整 API 文档见 [NOTATION_GUIDE.md](NOTATION_GUIDE.md)。

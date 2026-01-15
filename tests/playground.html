@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cube Playground</title>
+  <link rel="stylesheet" type="text/css" href="../assets/css/styles.css">
+  <style>
+    /* 覆盖主样式，让魔方和控制面板共存 */
+    body {
+      background: #1a1a1a;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .ui {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+    
+    /* 控制面板样式 */
+    .test-panel {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+      max-width: 350px;
+      max-height: 90vh;
+      overflow-y: auto;
+      z-index: 1000;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .test-panel h2 {
+      margin-top: 0;
+      color: #333;
+      font-size: 18px;
+      border-bottom: 2px solid #4CAF50;
+      padding-bottom: 10px;
+    }
+    
+    .test-panel h3 {
+      font-size: 14px;
+      color: #555;
+      margin: 15px 0 10px 0;
+    }
+    
+    .test-panel h3 {
+      font-size: 14px;
+      color: #555;
+      margin: 15px 0 10px 0;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 10px 0;
+    }
+    
+    .controls button {
+      padding: 8px 12px;
+      font-size: 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background: #4CAF50;
+      color: white;
+      transition: background 0.2s;
+    }
+    
+    .controls button:hover {
+      background: #45a049;
+    }
+    
+    .controls button.secondary {
+      background: #2196F3;
+    }
+    
+    .controls button.secondary:hover {
+      background: #0b7dda;
+    }
+    
+    .controls input[type="text"] {
+      flex: 1;
+      min-width: 200px;
+      padding: 8px;
+      font-size: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .algorithm-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 10px 0;
+    }
+    
+    .algorithm-item {
+      background: #f9f9f9;
+      padding: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      border: 1px solid #ddd;
+      transition: all 0.2s;
+    }
+    
+    .algorithm-item:hover {
+      background: #e3f2fd;
+      border-color: #2196F3;
+      transform: translateX(-2px);
+    }
+    
+    .algorithm-name {
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+    
+    .algorithm-moves {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      color: #666;
+    }
+    
+    .info {
+      background: #fff3cd;
+      padding: 10px;
+      border-radius: 4px;
+      border-left: 3px solid #ffc107;
+      margin: 10px 0;
+      font-size: 12px;
+    }
+    
+    code {
+      background: #f5f5f5;
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Three.js 库 -->
+  <script src="../assets/js/three.js"></script>
+
+  <!-- 魔方渲染容器（使用主样式的全屏布局）-->
+  <div class="ui">
+    <div class="ui__background"></div>
+    <div class="ui__game"></div>
+    <div class="ui__texts">
+      <h1 class="text text--title"><span>CUBE</span> <span>PLAYGROUND</span></h1>
+      <p class="text text--note"></p>
+      <p class="text text--timer"></p>
+      <p class="text text--complete"></p>
+      <p class="text text--best-time"></p>
+    </div>
+    <div class="ui__prefs" style="display: none;"></div>
+    <div class="ui__theme" style="display: none;"></div>
+    <div class="ui__stats" style="display: none;"></div>
+    <div class="text--theme" style="display: none;"></div>
+    <div class="btn--prefs" style="display: none;"></div>
+    <div class="btn--back" style="display: none;"></div>
+    <div class="btn--stats" style="display: none;"></div>
+    <div class="btn--reset" style="display: none;"></div>
+    <div class="btn--theme" style="display: none;"></div>
+  </div>
+
+  <!-- 测试控制面板（浮动在右侧）-->
+  <div class="test-panel">
+    <h2>🎮 Notation Tester</h2>
+
+    <h3>自定义算法</h3>
+    <div class="controls">
+      <input type="text" id="customAlgorithm" placeholder="R U R' U'" value="R U R' U'">
+      <button onclick="executeCustom()">执行</button>
+      <button class="secondary" onclick="executeInverse()">逆序</button>
+    </div>
+
+    <h3>基础动作</h3>
+    <div class="controls">
+      <button onclick="executeAlg('R')">R</button>
+      <button onclick="executeAlg('L')">L</button>
+      <button onclick="executeAlg('U')">U</button>
+      <button onclick="executeAlg('D')">D</button>
+      <button onclick="executeAlg('F')">F</button>
+      <button onclick="executeAlg('B')">B</button>
+    </div>
+    <div class="controls">
+      <button onclick="executeAlg('R\'')">R'</button>
+      <button onclick="executeAlg('L\'')">L'</button>
+      <button onclick="executeAlg('U\'')">U'</button>
+      <button onclick="executeAlg('D\'')">D'</button>
+      <button onclick="executeAlg('F\'')">F'</button>
+      <button onclick="executeAlg('B\'')">B'</button>
+    </div>
+    <div class="controls">
+      <button onclick="executeAlg('R2')">R2</button>
+      <button onclick="executeAlg('L2')">L2</button>
+      <button onclick="executeAlg('U2')">U2</button>
+      <button onclick="executeAlg('D2')">D2</button>
+      <button onclick="executeAlg('F2')">F2</button>
+      <button onclick="executeAlg('B2')">B2</button>
+    </div>
+
+    <h3>整体旋转</h3>
+    <div class="controls">
+      <button onclick="executeAlg('x')">x (R方向)</button>
+      <button onclick="executeAlg('y')">y (U方向)</button>
+      <button onclick="executeAlg('z')">z (F方向)</button>
+      <button onclick="executeAlg('x\'')">x'</button>
+      <button onclick="executeAlg('y\'')">y'</button>
+      <button onclick="executeAlg('z\'')">z'</button>
+    </div>
+
+    <h3>中间层 (Slice)</h3>
+    <div class="controls">
+      <button onclick="executeAlg('M')">M (中间竖层)</button>
+      <button onclick="executeAlg('E')">E (中间横层)</button>
+      <button onclick="executeAlg('S')">S (中间前后层)</button>
+      <button onclick="executeAlg('M\'')">M'</button>
+      <button onclick="executeAlg('E\'')">E'</button>
+      <button onclick="executeAlg('S\'')">S'</button>
+    </div>
+
+    <h3>宽转 (Wide)</h3>
+    <div class="controls">
+      <button onclick="executeAlg('r')">r (右两层)</button>
+      <button onclick="executeAlg('l')">l (左两层)</button>
+      <button onclick="executeAlg('u')">u (上两层)</button>
+      <button onclick="executeAlg('d')">d (下两层)</button>
+      <button onclick="executeAlg('f')">f (前两层)</button>
+      <button onclick="executeAlg('b')">b (后两层)</button>
+    </div>
+
+    <div id="numericNotationSection" style="display: none;">
+      <h3>数字层记法 (4x4+)</h3>
+      <div class="controls">
+      <button onclick="executeAlg('2R')">2R (双层右)</button>
+      <button onclick="executeAlg('2L')">2L (双层左)</button>
+      <button onclick="executeAlg('2U')">2U (双层上)</button>
+      <button onclick="executeAlg('2D')">2D (双层下)</button>
+      <button onclick="executeAlg('2F')">2F (双层前)</button>
+      <button onclick="executeAlg('2B')">2B (双层后)</button>
+    </div>
+    <div class="controls" id="tripleLayerControls" style="display: none;">
+      <button onclick="executeAlg('3R')">3R (三层右)</button>
+      <button onclick="executeAlg('3L')">3L (三层左)</button>
+      <button onclick="executeAlg('3U')">3U (三层上)</button>
+      <button onclick="executeAlg('3D')">3D (三层下)</button>
+      <button onclick="executeAlg('3F')">3F (三层前)</button>
+      <button onclick="executeAlg('3B')">3B (三层后)</button>
+    </div>
+    </div>
+
+    <h3>常用算法</h3>
+    <div class="algorithm-list" id="algorithmList"></div>
+
+  </div>
+  <!-- 测试面板结束 -->
+
+  <script type="module">
+    import { Game } from '../src/js/Game.js';
+
+    // 等待 DOM 加载
+    window.addEventListener('DOMContentLoaded', () => {
+      // 使用完整模式初始化（因为有完整的DOM结构）
+      window.game = new Game();
+      
+      // 游戏初始化完成后自动可用
+      setTimeout(() => {
+        if (window.game && window.game.notation) {
+          initNotationTest();
+        }
+      }, 1000);
+    });
+
+    function initNotationTest() {
+      console.log('Notation test initialized');
+      
+      // 检测魔方阶数，显示/隐藏数字记法区域
+      const cubeSize = window.game.cube.size;
+      console.log(`当前魔方阶数: ${cubeSize}x${cubeSize}`);
+      
+      if (cubeSize >= 4) {
+        document.getElementById('numericNotationSection').style.display = 'block';
+        if (cubeSize >= 5) {
+          document.getElementById('tripleLayerControls').style.display = 'flex';
+        }
+      }
+      
+      // 常用算法库
+      const algorithms = [
+        { name: 'Sexy Move', moves: "R U R' U'" },
+        { name: 'Sledgehammer', moves: "R' F R F'" },
+        { name: 'Sune', moves: "R U R' U R U2 R'" },
+        { name: 'Anti-Sune', moves: "R U2 R' U' R U' R'" },
+        { name: 'T-Perm', moves: "R U R' U' R' F R2 U' R' U' R U R' F'" },
+        { name: 'J-Perm', moves: "R U R' F' R U R' U' R' F R2 U' R'" },
+        { name: 'Y-Perm', moves: "F R U' R' U' R U R' F' R U R' U' R' F R F'" },
+        { name: 'F2L #1', moves: "U R U' R'" },
+        { name: 'F2L #2', moves: "U' R' U R" },
+      ];
+      
+      // 添加 4x4+ 专用算法
+      if (cubeSize >= 4) {
+        algorithms.push(
+          { name: '4x4 配对中心块', moves: "2R 2U 2R' 2U'" },
+          { name: '4x4 棱块配对', moves: "2R U 2R' U' 2R U 2R'" }
+        );
+      }
+      
+      if (cubeSize >= 5) {
+        algorithms.push(
+          { name: '5x5 三层算法', moves: "3Rw U 3Rw' U'" },
+          { name: '5x5 中心块重组', moves: "3R U 3R' U' 3R U 3R'" }
+        );
+      }
+      
+      if (cubeSize === 3) {
+        algorithms.push(
+          { name: 'Superflip', moves: "U R2 F B R B2 R U2 L B2 R U' D' R2 F R' L B2 U2 F2" }
+        );
+      }
+
+      const listEl = document.getElementById('algorithmList');
+      algorithms.forEach(alg => {
+        const item = document.createElement('div');
+        item.className = 'algorithm-item';
+        item.innerHTML = `
+          <div class="algorithm-name">${alg.name}</div>
+          <div class="algorithm-moves">${alg.moves}</div>
+        `;
+        item.onclick = () => executeAlg(alg.moves);
+        listEl.appendChild(item);
+      });
+    }
+
+    // 全局函数供 HTML 调用
+    window.executeAlg = function(algorithm) {
+      if (!window.game || !window.game.notation) {
+        console.error('Game not initialized');
+        return;
+      }
+      
+      console.log('Executing:', algorithm);
+      window.game.notation.move(algorithm, () => {
+        console.log('Completed:', algorithm);
+      });
+    };
+
+    window.executeCustom = function() {
+      const input = document.getElementById('customAlgorithm');
+      const algorithm = input.value.trim();
+      if (algorithm) {
+        executeAlg(algorithm);
+      }
+    };
+
+    window.executeInverse = function() {
+      if (!window.game || !window.game.notation) return;
+      
+      const input = document.getElementById('customAlgorithm');
+      const algorithm = input.value.trim();
+      if (algorithm) {
+        const inverse = window.game.notation.inverseAlgorithm(algorithm);
+        console.log('Original:', algorithm);
+        console.log('Inverse:', inverse);
+        executeAlg(inverse);
+      }
+    };
+
+    // 键盘快捷键
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT') return;
+      
+      const keyMap = {
+        'KeyR': 'R',
+        'KeyL': 'L',
+        'KeyU': 'U',
+        'KeyD': 'D',
+        'KeyF': 'F',
+        'KeyB': 'B'
+      };
+      
+      if (keyMap[e.code]) {
+        e.preventDefault();
+        const move = e.shiftKey ? keyMap[e.code] + "'" : keyMap[e.code];
+        executeAlg(move);
+      }
+    });
+  </script>
+</body>
+</html>

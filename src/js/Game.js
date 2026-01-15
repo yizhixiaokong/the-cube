@@ -11,6 +11,7 @@ import { Storage } from './Storage.js';
 import { Themes } from './Themes.js';
 import { ThemeEditor } from './ThemeEditor.js';
 import { Localization } from './Localization.js';
+import { Notation } from './Notation.js';
 import { States } from './States.js';
 // import { Keyboard } from './Keyboard.js';
 
@@ -43,8 +44,9 @@ const SLOW = false;
 
 class Game {
 
-  constructor() {
+  constructor(options = {}) {
 
+    // 初始化 DOM 引用
     this.dom = {
       ui: document.querySelector( '.ui' ),
       game: document.querySelector( '.ui__game' ),
@@ -69,17 +71,40 @@ class Game {
       },
     };
 
+    // 核心组件
     this.world = new World( this );
     this.cube = new Cube( this );
     this.controls = new Controls( this );
+    this.notation = new Notation( this );
+    this.themes = new Themes( this );
+    this.storage = new Storage( this );
+    
+    // 初始化核心功能
+    this.initCore();
+    
+    // 初始化完整功能
+    this.initFullMode();
+  }
+  
+  initCore() {
+    // 先初始化魔方（因为 storage.init 会调用 themes.setTheme，需要 cube.updateColors）
+    this.cube.init();
+    
+    // 加载存储的设置和主题
+    this.storage.init();
+    
+    // 启用控制
+    this.controls.enable();
+  }
+  
+  initFullMode() {
+    // UI 组件
     this.scrambler = new Scrambler( this );
     this.transition = new Transition( this );
     this.timer = new Timer( this );
     this.preferences = new Preferences( this );
     this.scores = new Scores( this );
-    this.storage = new Storage( this );
     this.confetti = new Confetti( this );
-    this.themes = new Themes( this );
     this.themeEditor = new ThemeEditor( this );
     this.localization = new Localization( this );
 
@@ -89,9 +114,7 @@ class Game {
     this.newGame = false;
     this.saved = false;
 
-    this.storage.init();
     this.preferences.init();
-    this.cube.init();
     this.transition.init();
     this.localization.init();
 
@@ -423,4 +446,7 @@ class Game {
 
 }
 
-window.game = new Game();
+export { Game };
+
+// 不自动创建实例，由各页面自己创建
+// window.game = new Game();
